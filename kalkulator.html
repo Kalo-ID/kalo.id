@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GiziPoin - Kalkulator Gizi</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">GiziPoin</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="scan.html">Scan</a></li>
+            <li class="nav-item"><a class="nav-link" href="kontak.html">Kontak</a></li>
+            <li class="nav-item"><a class="nav-link" href="login.html" id="nav-login-logout">Login</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="login-container"> 
+      <div class="text-center mb-4">
+        <h2>Kalkulator Kebutuhan Kalori</h2>
+        <p class="text-muted">Hitung BMR dan TDEE Anda (kebutuhan kalori harian).</p>
+      </div>
+
+      <div class="login-card"> 
+        <form id="kalkulator-form">
+          
+          <div class="mb-3">
+            <label class="form-label">Jenis Kelamin</label>
+            <div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="gender" id="gender-male" value="male" checked>
+                <label class="form-check-label" for="gender-male">Pria</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="gender" id="gender-female" value="female">
+                <label class="form-check-label" for="gender-female">Wanita</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="age">Umur</label>
+            <input type="number" class="form-control" id="age" placeholder="Contoh: 25" required>
+          </div>
+
+          <div class="row g-2 mb-3">
+            <div class="col-6">
+              <label class="form-label" for="weight">Berat (kg)</label>
+              <input type="number" class="form-control" id="weight" placeholder="Contoh: 60" required>
+            </div>
+            <div class="col-6">
+              <label class="form-label" for="height">Tinggi (cm)</label>
+              <input type="number" class="form-control" id="height" placeholder="Contoh: 165" required>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="activity">Tingkat Aktivitas</label>
+            <select class="form-select" id="activity" required>
+              <option value="1.2">Jarang (Pekerja kantoran, jarang olahraga)</option>
+              <option value="1.375">Ringan (Olahraga ringan 1-3x seminggu)</option>
+              <option value="1.55">Sedang (Olahraga sedang 3-5x seminggu)</option>
+              <option value="1.725">Aktif (Olahraga berat 6-7x seminggu)</option>
+              <option value="1.9">Sangat Aktif (Pekerja fisik / atlet)</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-submit">Hitung Kalori</button>
+        </form>
+      </div>
+
+      <div id="hasil-kalkulator" class="mt-4">
+      </div>
+      
+    </div> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script type="module" src="js/firebase.js"></script>
+    <script type="module" src="js/auth.js"></script> 
+    <script type="module" src="js/kalkulator.js"></script>
+  </body>
+</html>
