@@ -1,11 +1,34 @@
 /* ---- 1. Import Font & Pengaturan Global ---- */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
 
+/* * GANTI 'body' LAMA ANDA DENGAN INI. 
+ * Ini menambahkan background image + overlay terang agar teks terbaca.
+*/
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #f4f7f6; /* Latar belakang abu-abu sangat muda */
-  color: #333;
+  color: #333; /* Teks tetap hitam */
+
+  /* --- Background Image dengan Overlay Terang --- */
+  
+  /* ▼▼▼ PENTING: GANTI 'nama-gambar-Anda.jpg' DENGAN NAMA GAMBAR ASLI ANDA ▼▼▼ */
+  background-image: 
+    /* Lapisan gradient putih transparan (80% opacity) */
+    linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
+    /* Gambar Anda di bawahnya */
+    url("https://i.pinimg.com/1200x/0b/bb/e8/0bbbe8435a1373f6564377a6059cb710.jpg");
+  /* ▲▲▲ PENTING: GANTI 'nama-gambar-Anda.jpg' DENGAN NAMA GAMBAR ASLI ANDA ▲▲▲ */
+
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  
+  /* Ini membuat gambar background "diam" saat di-scroll */
+  background-attachment: fixed;
+  
+  /* Warna cadangan jika gambar gagal dimuat */
+  background-color: #f4f7f6; 
 }
+
 
 /* ---- 2. Navbar Kustom ---- */
 .navbar {
@@ -443,4 +466,134 @@ body {
 .hasil-gizi-detail strong {
   color: #00796B;
   font-weight: 700;
+}
+.navbar-brand img {
+  height: 70px; /* Atur tinggi logo, sesuaikan jika perlu */
+  width: auto;  /* Lebar akan menyesuaikan otomatis */
+}
+
+/* ========================================
+   KODE TAMBAHAN UNTUK ANIMASI
+   (Ini ditambahkan dari respons sebelumnya)
+======================================== */
+
+/* ---- 1. Definisi Keyframes (Jantung Animasi) ---- */
+
+/* Animasi 1: Muncul (Fade In) Perlahan */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Animasi 2: Muncul + Geser ke atas (Slide Up) */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px); /* Mulai dari 25px di bawah */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0); /* Selesai di posisi normal */
+  }
+}
+
+/* ---- 2. Terapkan Animasi ke Elemen Anda ---- */
+
+/* Menerapkan animasi "slideInUp" ke semua "kartu" besar */
+.poin-dashboard,
+.poin-dashboard-guest,
+.login-card,
+.contact-card,
+.hasil-gizi-card,
+.poin-display-mini,
+.login-container .text-center, /* Judul di kalkulator/kontak */
+.contact-container .text-center {
+  animation: slideInUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.1s both;
+}
+
+/* Menerapkan animasi ke kartu-kartu kecil */
+.feature-card,
+.reward-card {
+  animation: slideInUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+/* ---- 3. EFEK "STAGGER" (Muncul Bergantian) ---- */
+
+/* Untuk .feature-card di index.html */
+.row .col-md-4:nth-child(1) .feature-card,
+.row .col-6:nth-child(1) .feature-card { 
+  animation-delay: 0.2s; 
+}
+
+.row .col-md-4:nth-child(2) .feature-card,
+.row .col-6:nth-child(2) .feature-card { 
+  animation-delay: 0.3s; 
+}
+
+.row .col-md-4:nth-child(3) .feature-card,
+.row .col-6:nth-child(3) .feature-card { 
+  animation-delay: 0.4s; 
+}
+
+.row .col-md-4:nth-child(4) .feature-card,
+.row .col-6:nth-child(4) .feature-card { 
+  animation-delay: 0.5s; 
+}
+
+/* Untuk .reward-card di tukar.html */
+#reward-list .col-md-4:nth-child(1) .reward-card { 
+  animation-delay: 0.2s; 
+}
+#reward-list .col-md-4:nth-child(2) .reward-card { 
+  animation-delay: 0.3s; 
+}
+#reward-list .col-md-4:nth-child(3) .reward-card { 
+  animation-delay: 0.4s; 
+}
+
+
+/* ---- 4. Efek Hover yang Lebih Halus ---- */
+
+/* Sedikit perbaikan pada efek hover di tombol */
+.btn-klaim,
+.btn-submit,
+.btn-tukar {
+  transition: all 0.3s ease;
+}
+
+/*
+ * Ini akan menimpa .btn-klaim:hover, .btn-submit:hover, dll. 
+ * yang ada di atas untuk memberi efek yang lebih seragam
+*/
+.btn-klaim:hover,
+.btn-submit:hover,
+.btn-tukar:hover {
+  transform: scale(1.03); /* Sedikit membesar */
+  filter: brightness(1.1);  /* Sedikit lebih cerah */
+  
+  /* Khusus untuk .btn-klaim dan .btn-submit, jaga warna teksnya */
+  color: white; 
+}
+
+/* Jaga warna hover unik .btn-klaim */
+.btn-klaim:hover {
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.5);
+  color: #000; /* Balikkan ke warna asli */
+}
+/* Jaga warna hover unik .btn-submit */
+.btn-submit:hover {
+  background-color: #005a4d;
+  color: white;
+}
+/* Jaga warna hover unik .btn-tukar */
+.btn-tukar:hover {
+  background-color: #005a4d;
+  color: white;
+}
+
+/* Memperjelas efek hover di kartu fitur (menimpa kode di baris 118) */
+.feature-card:hover {
+  transform: translateY(-8px); /* Angkat sedikit lebih tinggi */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12); /* Bayangan lebih jelas */
+  color: #00796B;
 }

@@ -3,19 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GiziPoin - Tukar Poin</title>
+    <title>GiziPoin - Tukar Hadiah Langsung</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
     <link href="style.css" rel="stylesheet">
   </head>
   <body>
 
     <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
-        <a class="navbar-brand" href="index.html">GiziPoin</a>
+        <a class="navbar-brand" href="index.html">
+          <img src="logo.png" alt="Kalo.ID logo">
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,10 +30,10 @@
       </div>
     </nav>
 
-    <div class="container mt-4">
+    <div class="container mt-4 mb-5">
       <div class="text-center">
-        <h2>Tukar Poin Anda</h2>
-        <p class="text-muted">Gunakan poin yang sudah Anda kumpulkan!</p>
+        <h2>Tukar Hadiah Langsung</h2>
+        <p class="text-muted">Tukar poin, langsung terima hadiahnya detik ini juga!</p>
       </div>
 
       <div class="poin-display-mini" id="user-poin-header">
@@ -43,44 +43,88 @@
 
       <div class="row g-3 mt-3" id="reward-list">
         
-        <div class="col-md-4 col-12">
+        <div class="col-md-6 col-lg-3 col-12">
           <div class="reward-card">
             <div class="reward-image">
-              <i class="bi bi-ticket-detailed-fill"></i>
+              <i class="bi bi-phone-fill text-primary"></i>
             </div>
-            <h4>Voucher Diskon Rp 5.000</h4>
-            <p class="reward-cost">100 Poin</p>
-            <button class="btn btn-tukar" data-cost="100" data-name="Voucher Rp 5.000">Tukar</button>
+            <h4>Wallpaper Motivasi</h4>
+            <p class="text-muted small">Gambar HD untuk layar kunci HP Anda.</p>
+            <p class="reward-cost text-warning fw-bold">50 Poin</p>
+            
+            <button class="btn btn-tukar" 
+              data-cost="50" 
+              data-name="Wallpaper Motivasi" 
+              data-type="download"
+              data-url="https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">
+              Download
+            </button>
           </div>
         </div>
 
-        <div class="col-md-4 col-12">
+        <div class="col-md-6 col-lg-3 col-12">
           <div class="reward-card">
             <div class="reward-image">
-              <i class="bi bi-truck"></i>
+              <i class="bi bi-book-half text-danger"></i>
             </div>
-            <h4>Voucher Diskon Ongkir</h4>
-            <p class="reward-cost">250 Poin</p>
-            <button class="btn btn-tukar" data-cost="250" data-name="Voucher Diskon Ongkir">Tukar</button>
+            <h4>E-Book Resep Jus</h4>
+            <p class="text-muted small">PDF 5 Resep Jus Detox (1 Halaman).</p>
+            <p class="reward-cost text-warning fw-bold">100 Poin</p>
+            
+            <button class="btn btn-tukar" 
+              data-cost="100" 
+              data-name="E-Book Resep Jus" 
+              data-type="download"
+              data-url="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80">
+              Download PDF
+            </button>
           </div>
         </div>
 
-        <div class="col-md-4 col-12">
+        <div class="col-md-6 col-lg-3 col-12">
           <div class="reward-card">
             <div class="reward-image">
-              <i class="bi bi-gift-fill"></i>
+              <i class="bi bi-tag-fill text-success"></i>
             </div>
-            <h4>Hadiah Misterius</h4>
-            <p class="reward-cost">500 Poin</p>
-            <button class="btn btn-tukar" data-cost="500" data-name="Hadiah Misterius">Tukar</button>
+            <h4>Voucher Shopee 5rb</h4>
+            <p class="text-muted small">Kode unik diskon belanja sehat.</p>
+            <p class="reward-cost text-warning fw-bold">250 Poin</p>
+            
+            <button class="btn btn-tukar" 
+              data-cost="250" 
+              data-name="Voucher Shopee 5rb" 
+              data-type="code"
+              data-value="SEHAT-SHP-5K">
+              Lihat Kode
+            </button>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 col-12">
+          <div class="reward-card">
+            <div class="reward-image">
+              <i class="bi bi-gift-fill text-info"></i>
+            </div>
+            <h4>Voucher Tokped 10rb</h4>
+            <p class="text-muted small">Potongan belanja produk segar.</p>
+            <p class="reward-cost text-warning fw-bold">10 Poin</p>
+            
+            <button class="btn btn-tukar" 
+              data-cost="10" 
+              data-name="Voucher Tokped 10rb" 
+              data-type="code"
+              data-value="TOK-SEGAR-10K">
+              Lihat Kode
+            </button>
           </div>
         </div>
 
       </div> 
+
       <div id="reward-guest-message" style="display: none;">
         <div class="poin-dashboard-guest mt-4">
-          <h3>Oops, Anda Belum Login!</h3>
-          <p class="mt-3">Silakan login terlebih dahulu untuk melihat poin Anda dan menukarkan hadiah.</p>
+          <h3>Login Diperlukan</h3>
+          <p class="mt-3">Silakan login untuk menukar poin dengan hadiah langsung.</p>
           <a href="login.html" class="btn btn-klaim mt-2">
             <i class="bi bi-box-arrow-in-right"></i> Login Sekarang
           </a>
