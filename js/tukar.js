@@ -1,38 +1,31 @@
 // Import "alat" dari firebase.js
 import { auth, db, onAuthStateChanged, doc, getDoc, setDoc } from './firebase.js';
 
-// Ambil elemen dari halaman tukar.html
 const poinHeader = document.getElementById('user-poin-header');
 const rewardList = document.getElementById('reward-list');
 const guestMessage = document.getElementById('reward-guest-message');
 const allButtons = document.querySelectorAll('.btn-tukar');
 
-let currentUserPoin = 0; // Variabel untuk menyimpan poin pengguna
-let userDocRef = null; // Variabel untuk menyimpan referensi dokumen
+let currentUserPoin = 0;
+let userDocRef = null;
 
-// Nonaktifkan tombol saat loading dan beri status loading
+// Disable tombol saat loading
 allButtons.forEach(button => {
   button.disabled = true;
   button.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span>`;
 });
 
-// PERBAIKAN: Tambahkan pengecekan auth
+// Cek Auth
 if (typeof auth === 'undefined') {
-  poinHeader.innerHTML = `<span style="color: red;">Error: Firebase Auth tidak dimuat. Cek firebase.js.</span>`;
-  rewardList.style.display = 'none';
-  guestMessage.style.display = 'block';
+  poinHeader.innerHTML = `<span style="color: red;">Error: Firebase Auth tidak dimuat.</span>`;
 } else {
-  // Cek status login
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // --- PENGGUNA SUDAH LOGIN ---
-      
-      // Tampilkan daftar hadiah, sembunyikan pesan tamu
+      // === USER LOGIN ===
       rewardList.style.display = 'flex'; 
       guestMessage.style.display = 'none';
 
       try { 
-        // Ambil data poin
         userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
 
@@ -40,95 +33,95 @@ if (typeof auth === 'undefined') {
           currentUserPoin = userDoc.data().poin || 0;
           updatePoinDisplay(currentUserPoin);
         } else {
-          console.log("Dokumen pengguna tidak ditemukan!");
           updatePoinDisplay(0); 
         }
       } catch (error) { 
-        console.error("Error mengambil data poin:", error);
-        poinHeader.innerHTML = `<span style="color: red;">Error: Gagal memuat poin.</span>`;
-        alert("Error: Tidak bisa mengambil data poin. Silakan cek koneksi internet atau login ulang.");
-        return; 
+        console.error("Error data poin:", error);
       }
 
-      // Aktifkan/Nonaktifkan tombol berdasarkan poin
       updateButtonStatus();
 
     } else {
-      // --- PENGGUNA BELUM LOGIN (TAMU) ---
+      // === USER TAMU ===
       poinHeader.style.display = 'none';
       rewardList.style.display = 'none';
       guestMessage.style.display = 'block';
-
-      // Pastikan tombol dinonaktifkan untuk tamu
-      allButtons.forEach(button => {
-          button.disabled = true;
-          button.innerHTML = "Login untuk Tukar";
-      });
     }
   });
 }
 
-
-// Fungsi untuk update tampilan poin di header
 function updatePoinDisplay(poin) {
-  poinHeader.innerHTML = `Poin Anda Saat Ini: <strong>${poin} Poin</strong>`;
+  poinHeader.innerHTML = `Poin Anda: <strong>${poin}</strong> <i class="bi bi-coin text-warning"></i>`;
 }
 
-// Fungsi untuk cek status semua tombol
 function updateButtonStatus() {
   allButtons.forEach(button => {
     const cost = parseInt(button.dataset.cost); 
     if (currentUserPoin < cost) {
       button.disabled = true;
-      button.innerHTML = "Poin Tidak Cukup";
+      button.innerHTML = "Poin Kurang";
+      button.classList.add('btn-secondary');
+      button.classList.remove('btn-tukar');
     } else {
       button.disabled = false;
-      button.innerHTML = "Tukar";
+      button.innerHTML = "Tukar Sekarang"; // Teks lebih mengajak
+      button.classList.remove('btn-secondary');
+      button.classList.add('btn-tukar');
     }
   });
 }
 
-// Tambahkan event listener ke SEMUA tombol tukar
+// --- LOGIKA PENUKARAN UTAMA ---
 allButtons.forEach(button => {
   button.addEventListener('click', async (e) => {
-    // Tambahkan pengecekan jika userDocRef belum ada
-    if (!userDocRef) {
-      alert("Error: Sesi pengguna tidak ditemukan. Silakan login ulang.");
-      return;
-    }
+    if (!userDocRef) return;
 
-    const cost = parseInt(e.target.dataset.cost);
-    const name = e.target.dataset.name;
+    // Ambil data dari atribut HTML tombol
+    const target = e.target.closest('button');
+    const cost = parseInt(target.dataset.cost);
+    const name = target.dataset.name;
+    const type = target.dataset.type; // 'download' atau 'code'
+    const url = target.dataset.url;   // Link gambar/pdf
+    const codeVal = target.dataset.value; // Kode voucher
 
-    // Konfirmasi
-    const yakin = confirm(`Anda yakin ingin menukar ${cost} poin dengan "${name}"?`);
-    if (!yakin) {
-      return; 
-    }
+    // 1. Konfirmasi
+    const yakin = confirm(`Tukar ${cost} poin untuk mendapatkan "${name}"?`);
+    if (!yakin) return;
 
-    // Cek ulang poin (jaga-jaga)
+    // 2. Cek Poin Lagi
     if (currentUserPoin < cost) {
       alert("Poin Anda tidak cukup!");
       return;
     }
 
-    // Proses penukaran
     try {
+      // 3. Kurangi Poin di Database
       const poinBaru = currentUserPoin - cost;
-      
-      // Update data di Firebase
       await setDoc(userDocRef, { poin: poinBaru }, { merge: true });
 
-      // Update data lokal & tampilan
+      // 4. Update Tampilan
       currentUserPoin = poinBaru;
       updatePoinDisplay(currentUserPoin);
-      updateButtonStatus(); // Cek ulang status semua tombol
+      updateButtonStatus();
 
-      alert(`Selamat! Anda berhasil menukar poin dengan "${name}". Sisa poin Anda: ${poinBaru}`);
+      // 5. EKSEKUSI HADIAH (WUJUDNYA)
+      
+      if (type === 'download') {
+        // --- JIKA DOWNLOAD ---
+        alert(`BERHASIL! 🎉\n\nSisa Poin: ${poinBaru}\n\nFile "${name}" akan otomatis terbuka/terdownload di tab baru.`);
+        // Buka link di tab baru (Trigger Download)
+        window.open(url, '_blank');
+      
+      } else if (type === 'code') {
+        // --- JIKA KODE VOUCHER ---
+        // Gunakan prompt agar user bisa copy kodenya
+        prompt(`BERHASIL MENUKAR! 🎉\n\nSilakan screenshot atau copy kode voucher ini:`, codeVal);
+        alert(`Jangan lupa simpan kodenya ya! Sisa poin Anda: ${poinBaru}`);
+      }
 
     } catch (error) {
-      console.error("Error menukar poin:", error);
-      alert("Terjadi error saat menukar poin.");
+      console.error("Error tukar:", error);
+      alert("Maaf, transaksi gagal. Coba lagi nanti.");
     }
   });
 });

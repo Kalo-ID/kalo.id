@@ -10,41 +10,109 @@ import { auth, db, onAuthStateChanged, doc, getDoc, setDoc } from './firebase.js
 const codeReader = new ZXing.BrowserMultiFormatReader();
 
 // --- Database produk lokal (mengandung info gizi) ---
+// --- Database produk lokal (Update dari Katalog Kalori) ---
+// --- Database produk lokal (Update: 20 Nov 2025) ---
 const productDatabase = {
-  // Barcode 1
-  '8992761132711': {
-    name: 'Jus Apel Kemasan (250ml)',
-    info: '<strong>Energi:</strong> 120 kkal | <strong>Gula:</strong> 28g | <strong>Lemak:</strong> 0g',
-    warning: '⚠️ TINGGI GULA!',
-    suggestion: '<strong>Saran Alternatif:</strong> Jus buah segar tanpa tambahan gula.',
+  // ==========================================
+  // 1. KATEGORI: BUAH-BUAHAN (Simulasi Barcode Toko)
+  // ==========================================
+  '2001001001001': {
+    name: 'Apel Fuji (100g)',
+    info: '<strong>Energi:</strong> 52 kkal | <strong>Gula:</strong> 10.39g | <strong>Serat:</strong> 2.4g',
+    warning: '✅ KAYA SERAT',
+    suggestion: 'Makan dengan kulitnya untuk serat maksimal. [Sumber: Katalog Hal 6]',
     isProduct: true
   },
-  // Barcode 2
-  '8996001301031': {
-    name: 'Cokelat Batang (50g)',
-    info: '<strong>Energi:</strong> 250 kkal | <strong>Gula:</strong> 25g | <strong>Lemak:</strong> 15g',
-    warning: '⚠️ TINGGI GULA & LEMAK!',
-    suggestion: '<strong>Saran Alternatif:</strong> Dark chocolate (>70%) atau buah-buahan.',
+  '2001001001002': {
+    name: 'Pisang Cavendish (100g)',
+    info: '<strong>Energi:</strong> 89 kkal | <strong>Karbo:</strong> 22.84g | <strong>Gula:</strong> 12.23g',
+    warning: '⚡ SUMBER ENERGI INSTAN',
+    suggestion: 'Cocok dimakan sebelum olahraga. [Sumber: Katalog Hal 6]',
     isProduct: true
   },
-  // Barcode 3
-  '070470478952': {
-    name: 'Pocari Sweat (250g)',
-    info: '<strong>Energi:</strong> 70 kkal | <strong>Gula:</strong> 17g | <strong>Protein:</strong> 0g',
-    warning: '✅ PILIHAN BAIK!',
-    suggestion: '<strong>Saran penyajian:</strong> Tambahkan buah segar untuk mempercepat pemulihan cairan tubuh.',
+  '2001001001003': {
+    name: 'Alpukat Mentega (100g)',
+    info: '<strong>Energi:</strong> 160 kkal | <strong>Lemak:</strong> 14.66g | <strong>Gula:</strong> 0.66g',
+    warning: '✅ LEMAK SEHAT',
+    suggestion: 'Tinggi kalori tapi lemak baik. Konsumsi secukupnya. [Sumber: Katalog Hal 8]',
     isProduct: true
   },
-  // QR Code Khusus Aplikasi (Tidak Dapat Poin)
-  'APP_BUKA_PROFIL': {
-    name: 'Aksi Aplikasi: Buka Profil',
-    info: '<strong>Status:</strong> Perintah "Buka Profil" diterima.',
-    warning: '✅ PERINTAH DIJALANKAN',
-    suggestion: '<strong>Info:</strong> Anda akan diarahkan ke halaman profil pengguna...',
-    isProduct: false
+
+  // ==========================================
+  // 2. KATEGORI: MIE INSTAN (Barcode Umum)
+  // ==========================================
+  '8998866200578': { // Indomie Goreng Biasa
+    name: 'Indomie Mi Goreng (85g)',
+    info: '<strong>Energi:</strong> 380 kkal | <strong>Karbo:</strong> 54g | <strong>Lemak:</strong> 14g',
+    warning: '⚠️ TINGGI KALORI & NATRIUM',
+    suggestion: 'Tambahkan sayur dan kurangi bumbu untuk lebih sehat. [Sumber: Katalog Hal 74]',
+    isProduct: true
+  },
+  '8998866200592': { // Pop Mie Ayam
+    name: 'Pop Mie Rasa Ayam (75g)',
+    info: '<strong>Energi:</strong> 350 kkal | <strong>Gula:</strong> 4g | <strong>Lemak:</strong> 16g',
+    warning: '⚠️ MAKANAN OLAHAN',
+    suggestion: 'Praktis, tapi batasi konsumsi mingguan. [Sumber: Katalog Hal 73]',
+    isProduct: true
+  },
+  '8801073110571': { // Samyang Buldak
+    name: 'Samyang Buldak Ramen (140g)',
+    info: '<strong>Energi:</strong> 530 kkal | <strong>Gula:</strong> 7g | <strong>Lemak:</strong> 16g',
+    warning: '⚠️ KALORI SANGAT TINGGI',
+    suggestion: '1 porsi = 1/4 kebutuhan harian! Sebaiknya berbagi. [Sumber: Katalog Hal 74]',
+    isProduct: true
+  },
+
+  // ==========================================
+  // 3. KATEGORI: SNACK & BISKUIT
+  // ==========================================
+  '7622300464293': { // Oreo Original
+    name: 'Oreo Original (3 Keping)',
+    info: '<strong>Energi:</strong> 140 kkal | <strong>Gula:</strong> 11g | <strong>Karbo:</strong> 21g',
+    warning: '⚠️ TINGGI GULA',
+    suggestion: '3 keping = 140 kkal. Jangan habiskan sebungkus! [Sumber: Katalog Hal 66]',
+    isProduct: true
+  },
+  '8992741956016': { // Chitato Sapi Panggang
+    name: 'Chitato Sapi Panggang (35g)', 
+    info: '<strong>Energi:</strong> 110 kkal (per 20g)', 
+    warning: '⚠️ TINGGI LEMAK JENUH',
+    suggestion: 'Keripik kentang mengandung kalori padat. [Sumber: Katalog Hal 69]',
+    isProduct: true
+  },
+  '8851019030172': { // Pocky Chocolate
+    name: 'Pocky Chocolate (47g)',
+    info: '<strong>Energi:</strong> 230 kkal | <strong>Gula:</strong> 12g | <strong>Karbo:</strong> 32g',
+    warning: '⚠️ CAMILAN MANIS',
+    suggestion: 'Enak tapi tinggi gula. Cocok sebagai treat sesekali. [Sumber: Katalog Hal 64]',
+    isProduct: true
+  },
+
+  // ==========================================
+  // 4. KATEGORI: MINUMAN KEMASAN
+  // ==========================================
+  '8996001600268': { // Teh Botol Sosro
+    name: 'Teh Botol Sosro (450ml)',
+    info: '<strong>Energi:</strong> 140 kkal | <strong>Gula:</strong> 32g !',
+    warning: '⛔ GULA SANGAT TINGGI',
+    suggestion: 'Mengandung setara ~3 sdm gula. Pilih varian tawar/less sugar. [Sumber: Katalog Hal 88]',
+    isProduct: true
+  },
+  '8992761112119': { // Yakult
+    name: 'Yakult (65ml)',
+    info: '<strong>Energi:</strong> 50 kkal | <strong>Gula:</strong> 10g',
+    warning: '✅ BAIK UNTUK USUS',
+    suggestion: 'Probiotik baik, tapi kandungan gula cukup tinggi per ml. [Sumber: Katalog Hal 42]',
+    isProduct: true
+  },
+  '8992775316032': { // Pocari Sweat
+    name: 'Pocari Sweat (Can 330ml)',
+    info: '<strong>Energi:</strong> 70 kkal (per 250ml)',
+    warning: '✅ BAGUS UNTUK HIDRASI',
+    suggestion: 'Minum saat banyak berkeringat/olahraga. [Sumber: Katalog Hal 86]',
+    isProduct: true
   }
 };
-
 // --- Elemen DOM ---
 const startBtn = document.getElementById('start-scan-btn');
 const stopBtn = document.getElementById('stop-scan-btn');
